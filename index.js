@@ -22,8 +22,7 @@ if (missingEnv.length) {
 // ✅ CORS FIXED: Trailing slash hata diya aur options add kiye
 const allowedOrigins = [
   "https://chat-app-frontend-nu-ruddy.vercel.app", // Slash nahi hona chahiye
-  "http://localhost:5173", // Local development ke liye
-  "https://chat-app-frontend-nu-ruddy.vercel.app"
+  "http://localhost:5173",
 ];
 
 app.use(cors({
