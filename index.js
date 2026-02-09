@@ -23,7 +23,7 @@ if (missingEnv.length) {
 const allowedOrigins = [
   "https://chat-app-frontend-nu-ruddy.vercel.app", // Slash nahi hona chahiye
   "http://localhost:5173", // Local development ke liye
-  "https://chat-app-frontend-nu-ruddy.vercel.app/"
+  "https://chat-app-frontend-nu-ruddy.vercel.app"
 ];
 
 app.use(cors({
