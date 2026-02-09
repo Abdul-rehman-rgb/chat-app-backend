@@ -9,25 +9,35 @@ import cors from "cors";
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// ✅ CORS FIXED: Trailing slash hata diya aur options add kiye
+const allowedOrigins = [
+  "https://chat-app-frontend-nu-ruddy.vercel.app", // Slash nahi hona chahiye
+  "http://localhost:5173" // Local development ke liye
+];
+
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
-// ✅ middleware FIRST
 app.use(express.json());
 app.use(cookieParser());
 
-// ✅ routes
+// Routes
 app.use("/api/v1/user", userRoute);
 app.use("/api/v1/message", messageRoute);
-
-// ✅ serve uploads (for profile photos)
 app.use("/uploads", express.static("uploads"));
 
-// ✅ DB connection
 connectDB();
 
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });
