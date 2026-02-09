@@ -69,6 +69,11 @@ const login = async (req, res) => {
         }
 
         const tokenData = { userId: user._id };
+        if (!process.env.JWT_SECRET) {
+            console.error('JWT_SECRET is not set in environment');
+            return res.status(500).json({ message: 'Server misconfiguration: JWT secret missing' });
+        }
+
         const token = jwt.sign(tokenData, process.env.JWT_SECRET, { expiresIn: '1d' });
 
         return res.status(200)
@@ -85,7 +90,7 @@ const login = async (req, res) => {
                 message: `Welcome back ${user.fullName}`
             });
     } catch (error) {
-        console.log(error);
+        console.error('Login error:', error?.stack || error);
         return res.status(500).json({ message: "Internal server error" });
     }
 };

@@ -9,6 +9,16 @@ import cors from "cors";
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Fail fast when required environment variables are missing
+const missingEnv = [];
+if (!process.env.MONGO_URI) missingEnv.push('MONGO_URI');
+if (!process.env.JWT_SECRET) missingEnv.push('JWT_SECRET');
+if (missingEnv.length) {
+  console.error('Missing required environment variables:', missingEnv.join(', '));
+  console.error('Create a .env file or set these in your environment before starting the server.');
+  process.exit(1);
+}
+
 // ✅ CORS FIXED: Trailing slash hata diya aur options add kiye
 const allowedOrigins = [
   "https://chat-app-frontend-nu-ruddy.vercel.app", // Slash nahi hona chahiye

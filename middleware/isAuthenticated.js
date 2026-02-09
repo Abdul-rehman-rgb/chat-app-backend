@@ -7,6 +7,11 @@ const isAuthenticated = async (req, res, next) => {
             return res.status(401).json({ message: "User Is Not Authenticated" });
         }
 
+        if (!process.env.JWT_SECRET) {
+            console.error('JWT_SECRET is not set in environment');
+            return res.status(500).json({ message: 'Server misconfiguration: JWT secret missing' });
+        }
+
         // Token ko verify karein
         const decode = await jwt.verify(token, process.env.JWT_SECRET);
 
@@ -14,13 +19,12 @@ const isAuthenticated = async (req, res, next) => {
             return res.status(401).json({ message: "Invalid Token" });
         }
 
-        // Sabse important step: 
         // Token se mili userId ko 'req' object mein dalna taaki controllers isse use kar sakein
         req.id = decode.userId; 
 
         next(); // Agle function (controller) par jao
     } catch (error) {
-        console.log("Auth Middleware Error:", error);
+        console.error('Auth Middleware Error:', error?.stack || error);
         return res.status(500).json({ message: "Internal server error" });
     }
 };
