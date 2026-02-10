@@ -22,7 +22,13 @@ const isAuthenticated = async (req, res, next) => {
         }
 
         // Token ko verify karein
-        const decode = await jwt.verify(token, process.env.JWT_SECRET);
+        let decode;
+        try {
+            decode = jwt.verify(token, process.env.JWT_SECRET);
+        } catch (tokenError) {
+            console.error('Token verification failed:', tokenError.message);
+            return res.status(401).json({ message: "Invalid or expired token" });
+        }
 
         if (!decode) {
             return res.status(401).json({ message: "Invalid Token" });
@@ -34,7 +40,7 @@ const isAuthenticated = async (req, res, next) => {
         next(); // Agle function (controller) par jao
     } catch (error) {
         console.error('Auth Middleware Error:', error?.stack || error);
-        return res.status(500).json({ message: "Internal server error" });
+        return res.status(401).json({ message: "Authentication failed" });
     }
 };
 
